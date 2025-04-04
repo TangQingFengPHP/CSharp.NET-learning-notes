@@ -5,6 +5,18 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Configurations>Debug;Release;Staging</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+    
+    <!-- Staging 模式配置 -->
+    <PropertyGroup Condition="'$(Configuration)' == 'Staging'">
+        <DefineConstants>STAGING</DefineConstants>
+        <OutputPath>bin\Staging\</OutputPath>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>portable</DebugType>
+        <Optimize>false</Optimize>
+        <ErrorReport>prompt</ErrorReport>
     </PropertyGroup>
 
 </Project>
