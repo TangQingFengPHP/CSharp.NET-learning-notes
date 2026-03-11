@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expression Tree Minimal API Demo</title>
+  <style>
+    :root {
+      --bg: radial-gradient(circle at top left, #f5efe4 0%, #dce6f0 45%, #edf4f8 100%);
+      --panel: rgba(255,255,255,0.88);
+      --ink: #132238;
+      --muted: #56708d;
+      --accent: #b85c38;
+      --accent2: #295a8a;
+      --line: rgba(19,34,56,0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+    .hero, .layout {
+      display: grid;
+      gap: 20px;
+    }
+    .hero { grid-template-columns: 1.15fr 0.85fr; }
+    .layout { grid-template-columns: 360px 1fr; margin-top: 20px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 18px 48px rgba(31, 53, 79, 0.12);
+      backdrop-filter: blur(16px);
+    }
+    .intro, .meta, .filters, .results { padding: 24px; }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent2);
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      margin: 0 0 14px;
+      line-height: 0.95;
+      font-size: clamp(30px, 6vw, 62px);
+    }
+    p, .small { color: var(--muted); line-height: 1.65; }
+    .field { margin-bottom: 14px; }
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+    input, select, button {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      padding: 13px 14px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+      color: white;
+      background: var(--accent);
+      transition: transform .18s ease, opacity .18s ease;
+    }
+    button.secondary { background: var(--accent2); }
+    button:hover { transform: translateY(-1px); }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(255,255,255,.72);
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      color: var(--ink);
+      min-height: 90px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: rgba(41,90,138,.12);
+      color: var(--accent2);
+    }
+    @media (max-width: 940px) {
+      .hero, .layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card intro">
+        <div class="eyebrow">Expression Tree + Minimal API</div>
+        <h1>前端筛选条件<br/>动态变成表达式树</h1>
+        <p>这个页面直接调用同项目中的 Minimal API。你输入筛选条件后，服务端会动态构建 `Expression&lt;Func&lt;Product, bool&gt;&gt;`，再把生成的表达式字符串和结果一起返回。</p>
+      </div>
+      <aside class="card meta">
+        <div class="eyebrow">API</div>
+        <div class="pill">GET /api/products/search</div>
+        <p class="small">适合观察的重点：</p>
+        <p class="small">1. 查询参数如何进入服务层</p>
+        <p class="small">2. 表达式树如何按条件动态拼接</p>
+        <p class="small">3. 最终表达式长什么样</p>
+      </aside>
+    </section>
+
+    <section class="layout">
+      <div class="card filters">
+        <div class="field">
+          <label for="keyword">Keyword</label>
+          <input id="keyword" value="Pro" />
+        </div>
+        <div class="field">
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="">All</option>
+            <option value="Laptop">Laptop</option>
+            <option value="Accessory">Accessory</option>
+            <option value="Tablet">Tablet</option>
+            <option value="Monitor">Monitor</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="minPrice">Min Price</label>
+          <input id="minPrice" type="number" value="300" />
+        </div>
+        <div class="field">
+          <label for="maxPrice">Max Price</label>
+          <input id="maxPrice" type="number" value="16000" />
+        </div>
+        <div class="field">
+          <label for="onlyInStock">Only In Stock</label>
+          <select id="onlyInStock">
+            <option value="true">true</option>
+            <option value="false">false</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button id="searchBtn">查询</button>
+          <button id="resetBtn" class="secondary">重置</button>
+        </div>
+      </div>
+
+      <div class="card results">
+        <div class="eyebrow">Generated Expression</div>
+        <pre id="expressionBox">等待查询...</pre>
+        <div style="margin-top:16px" class="eyebrow">Results</div>
+        <div id="summary" class="small">暂无结果</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>In Stock</th>
+            </tr>
+          </thead>
+          <tbody id="resultBody">
+            <tr><td colspan="5" class="small">暂无数据</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const keyword = document.getElementById('keyword');
+    const category = document.getElementById('category');
+    const minPrice = document.getElementById('minPrice');
+    const maxPrice = document.getElementById('maxPrice');
+    const onlyInStock = document.getElementById('onlyInStock');
+    const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const expressionBox = document.getElementById('expressionBox');
+    const summary = document.getElementById('summary');
+    const resultBody = document.getElementById('resultBody');
+
+    function buildQuery() {
+      const params = new URLSearchParams();
+      if (keyword.value.trim()) params.set('keyword', keyword.value.trim());
+      if (category.value) params.set('category', category.value);
+      if (minPrice.value.trim()) params.set('minPrice', minPrice.value.trim());
+      if (maxPrice.value.trim()) params.set('maxPrice', maxPrice.value.trim());
+      params.set('onlyInStock', onlyInStock.value);
+      return params.toString();
+    }
+
+    async function search() {
+      const response = await fetch(`/api/products/search?${buildQuery()}`);
+      const data = await response.json();
+
+      expressionBox.textContent = data.expression;
+      summary.textContent = `Count: ${data.count}`;
+
+      if (!data.items.length) {
+        resultBody.innerHTML = '<tr><td colspan="5" class="small">没有匹配结果</td></tr>';
+        return;
+      }
+
+      resultBody.innerHTML = data.items.map(item => `
+        <tr>
+          <td>${item.id}</td>
+          <td>${item.name}</td>
+          <td>${item.category}</td>
+          <td>${item.price}</td>
+          <td>${item.inStock}</td>
+        </tr>
+      `).join('');
+    }
+
+    function reset() {
+      keyword.value = 'Pro';
+      category.value = '';
+      minPrice.value = '300';
+      maxPrice.value = '16000';
+      onlyInStock.value = 'true';
+      search();
+    }
+
+    searchBtn.addEventListener('click', search);
+    resetBtn.addEventListener('click', reset);
+
+    search();
+  </script>
+</body>
+</html>
