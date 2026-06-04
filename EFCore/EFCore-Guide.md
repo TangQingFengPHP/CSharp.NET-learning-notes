@@ -95,10 +95,49 @@ dotnet ef migrations script \
   --startup-project src/EfCorePractice.Api -o migrate.sql
 ```
 
-## 七、推荐学习顺序
+## 七、架构模式对照（并列保留，互不覆盖）
 
-1. 读 `Domain` 实体与 `AppDbContext` 配置  
-2. 跑通 Docker + Swagger，用 `POST /users` 创建数据  
-3. 对照 `GET /users/{id}/with-orders` 理解 Include / N+1  
-4. 试软删除、租户 Header、`/migrations`  
-5. 用 `dotnet ef` 改模型并新增迁移，观察 `Migrations` 文件夹变化  
+| 模式 | 说明 | 路由前缀 | DbContext / 组件 |
+| --- | --- | --- | --- |
+| **A** Service + DbContext | 原有实战入口，功能最全 | `/users`、`/orders`、`/demo` | `AppDbContext` + `UserService` |
+| **B** Repository + UnitOfWork | 仓储封装 + 统一 Commit | `/patterns/uow/users` | `IUnitOfWork`、`UserRepository` |
+| **C** 读写分离 | 读库默认 NoTracking | `/patterns/read/users`（读） | `AppReadDbContext` / 写仍用 A |
+| **拦截器链** | 慢 SQL + 审计 | `/patterns/interceptors/*` | `SlowQueryInterceptor` → `AuditableEntityInterceptor` |
+
+### 模式 A（保留）
+
+- 全部 EF 知识点的主入口：迁移、软删、多租户、ExecuteUpdate、事务（ExecutionStrategy）等。
+- 代码：`Application/Services/UserService.cs`、`Api/Controllers/UsersController.cs`
+
+### 模式 B（新增）
+
+- `IUserRepository` / `IOrderRepository` / `IUnitOfWork`
+- `POST /patterns/uow/users/with-order`：同一 Scoped 内两次 `CommitAsync` 演示 UoW
+- 代码：`Infrastructure/Repositories/`、`UserUnitOfWorkService.cs`
+
+### 模式 C（新增）
+
+- `AppReadDbContext`：与写库共享 `AppDbContextModelConfiguration`，DI 注册 `UseQueryTrackingBehavior(NoTracking)`
+- 只读 API，写操作请走模式 A 或 B
+- 代码：`UserReadService.cs`、`ReadUsersController.cs`
+
+### 拦截器链（新增）
+
+| 顺序 | 拦截器 | 类型 | 职责 |
+| --- | --- | --- | --- |
+| 1 | `SlowQueryInterceptor` | `DbCommandInterceptor` | 耗时 ≥ 阈值写日志 + `SlowQueryMetrics` |
+| 2 | `AuditableEntityInterceptor` | `SaveChangesInterceptor` | `CreatedAt` / `UpdatedAt` |
+
+- `GET /patterns`：三种模式说明
+- `GET /patterns/interceptors/slow-queries`：最近慢 SQL
+- `POST /patterns/interceptors/slow-queries/demo`：MySQL `SLEEP` 触发慢查询
+- 配置：`appsettings.json` → `SlowQuery:ThresholdMs`
+
+## 八、推荐学习顺序
+
+1. `GET /patterns` 了解三种模式路由  
+2. 模式 A：`POST /users` → `GET /users/{id}/with-orders`  
+3. 模式 B：对照 `POST /patterns/uow/users` 与 A 的请求体  
+4. 模式 C：`GET /patterns/read/users/{id}`，观察读库 NoTracking  
+5. `POST /patterns/interceptors/slow-queries/demo` 后查看慢 SQL 列表  
+6. 软删除、租户、`/migrations`、`dotnet ef` 迁移  

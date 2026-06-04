@@ -104,7 +104,33 @@ curl "http://localhost:8185/users/deleted"
 curl -X PUT "http://localhost:8185/users/4/restore"
 ```
 
-## 其他 EF 特性入口
+## 三种数据访问模式（并列对照）
+
+| 模式 | 说明 | 入口 |
+| --- | --- | --- |
+| A | Service 直用 DbContext（**原有全套 API，保留**） | `/users`、`/orders`、`/demo` |
+| B | 仓储 + 工作单元 | `/patterns/uow/users` |
+| C | 读写分离读库 | `/patterns/read/users` |
+| 拦截器 | 慢 SQL 链 + 审计 | `/patterns`、`/patterns/interceptors/*` |
+
+```bash
+# 查看三种模式说明
+curl http://localhost:8185/patterns
+
+# 模式 B：UoW 创建用户
+curl -X POST http://localhost:8185/patterns/uow/users \
+  -H "Content-Type: application/json" \
+  -d '{"username":"uow","email":"uow@example.com","age":25}'
+
+# 模式 C：读库查询
+curl http://localhost:8185/patterns/read/users/1
+
+# 慢 SQL 演示
+curl -X POST http://localhost:8185/patterns/interceptors/slow-queries/demo
+curl http://localhost:8185/patterns/interceptors/slow-queries
+```
+
+## 其他 EF 特性入口（模式 A）
 
 | 能力 | 接口 |
 | --- | --- |

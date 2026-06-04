@@ -11,6 +11,11 @@ public static class DependencyInjection
         services.AddScoped<OrderService>();
         services.AddScoped<DemoService>();
         services.AddScoped<MigrationService>();
+
+        services.AddScoped<UserUnitOfWorkService>();
+        services.AddScoped<UserReadService>();
+        services.AddScoped<PatternsService>();
+
         return services;
     }
 }
