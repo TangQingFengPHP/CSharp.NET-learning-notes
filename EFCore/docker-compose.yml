@@ -1,0 +1,49 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: efcore-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-efcore_demo}
+      TZ: Asia/Shanghai
+      LANG: C.UTF-8
+    ports:
+      - "${MYSQL_PORT:-3313}:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p123456"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: efcore-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_URLS: http://+:8185
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      EnableSwagger: ${ENABLE_SWAGGER:-true}
+      ApplyMigrationsOnStartup: ${APPLY_MIGRATIONS_ON_STARTUP:-true}
+      ConnectionStrings__Default: Server=mysql;Port=3306;Database=${MYSQL_DATABASE:-efcore_demo};User=root;Password=${MYSQL_ROOT_PASSWORD:-123456};CharSet=utf8mb4;
+    ports:
+      - "${APP_PORT:-8185}:8185"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8185/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
+
+volumes:
+  mysql_data:

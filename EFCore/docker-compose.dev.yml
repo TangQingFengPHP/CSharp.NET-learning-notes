@@ -1,0 +1,8 @@
+# 仅启动 MySQL，应用在宿主机调试：
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up mysql -d
+#   dotnet run --project src/EfCorePractice.Api
+
+services:
+  app:
+    profiles:
+      - donotstart

@@ -1,0 +1,43 @@
+# 构建产物
+**/bin/
+**/obj/
+**/out/
+**/publish/
+
+# 测试与 IDE
+**/tests/
+**/.idea/
+**/.vs/
+**/.vscode/
+*.user
+*.suo
+
+# Git 与文档（减小构建上下文）
+.git/
+.gitignore
+**/*.md
+!README.md
+
+# 历史 Demo 目录（不参与镜像构建）
+EFCore01-Basics/
+EFCore02-Migrations/
+EFCore03-ModelConfiguration/
+EFCore04-Querying/
+Shared/
+Controllers/
+Services/
+Data/
+Entities/
+Models/
+Specifications/
+Middleware/
+Properties/
+db/
+EfCorePractice.csproj
+EfCorePractice.http
+
+# Docker 本地文件
+.env
+.env.*
+docker-compose*.yml
+!docker-compose.yml
