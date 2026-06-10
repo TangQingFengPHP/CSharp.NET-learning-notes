@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskFactory01-BasicStartNew", "TaskFactory01-BasicStartNew\TaskFactory01-BasicStartNew.csproj", "{CED4AC00-0015-41CE-B4E9-ED67BF4D9069}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskFactory02-CancellationAndLongRunning", "TaskFactory02-CancellationAndLongRunning\TaskFactory02-CancellationAndLongRunning.csproj", "{FEB86C34-A44F-49C1-A1F5-0E645A7F0C23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskFactory03-Continuation", "TaskFactory03-Continuation\TaskFactory03-Continuation.csproj", "{5007E6C4-2E3C-4523-A609-830D022D46DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskFactory04-ProjectPractice", "TaskFactory04-ProjectPractice\TaskFactory04-ProjectPractice.csproj", "{D7D48224-BE7C-4B92-B689-7C00D1FD87EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskFactory05-PitfallsAndBestPractices", "TaskFactory05-PitfallsAndBestPractices\TaskFactory05-PitfallsAndBestPractices.csproj", "{A7024CE3-5E49-401F-9838-134A39C3261D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CED4AC00-0015-41CE-B4E9-ED67BF4D9069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CED4AC00-0015-41CE-B4E9-ED67BF4D9069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CED4AC00-0015-41CE-B4E9-ED67BF4D9069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CED4AC00-0015-41CE-B4E9-ED67BF4D9069}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEB86C34-A44F-49C1-A1F5-0E645A7F0C23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEB86C34-A44F-49C1-A1F5-0E645A7F0C23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEB86C34-A44F-49C1-A1F5-0E645A7F0C23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEB86C34-A44F-49C1-A1F5-0E645A7F0C23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5007E6C4-2E3C-4523-A609-830D022D46DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5007E6C4-2E3C-4523-A609-830D022D46DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5007E6C4-2E3C-4523-A609-830D022D46DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5007E6C4-2E3C-4523-A609-830D022D46DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7D48224-BE7C-4B92-B689-7C00D1FD87EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7D48224-BE7C-4B92-B689-7C00D1FD87EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7D48224-BE7C-4B92-B689-7C00D1FD87EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7D48224-BE7C-4B92-B689-7C00D1FD87EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7024CE3-5E49-401F-9838-134A39C3261D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7024CE3-5E49-401F-9838-134A39C3261D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7024CE3-5E49-401F-9838-134A39C3261D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7024CE3-5E49-401F-9838-134A39C3261D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
